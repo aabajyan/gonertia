@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -54,6 +55,16 @@ func New(rootTemplateHTML string, opts ...Option) (*Inertia, error) {
 	}
 
 	return i, nil
+}
+
+// NewFromFileFS reads all bytes from the root template file and then initializes Inertia.
+func NewFromFileFS(rootFS fs.FS, rootTemplatePath string, opts ...Option) (*Inertia, error) {
+	bs, err := fs.ReadFile(rootFS, rootTemplatePath)
+	if err != nil {
+		return nil, fmt.Errorf("read file %q: %w", rootTemplatePath, err)
+	}
+
+	return NewFromBytes(bs, opts...)
 }
 
 // NewFromFile reads all bytes from the root template file and then initializes Inertia.

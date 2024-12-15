@@ -52,6 +52,7 @@ import (
 func main() {
     i, err := inertia.New(rootHTMLString)
     // i, err := inertia.NewFromFile("resources/views/root.html")
+    // i, err := inertia.NewFromFileFS(embedFS, "resources/views/root.html")
     // i, err := inertia.NewFromReader(rootHTMLReader)
     // i, err := inertia.NewFromBytes(rootHTMLBytes)
     if err != nil {

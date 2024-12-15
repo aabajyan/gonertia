@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"testing/fstest"
 )
 
 var rootTemplate = `<html>
@@ -44,6 +45,25 @@ func TestNewFromFile(t *testing.T) {
 	f := tmpFile(t, rootTemplate)
 
 	i, err := NewFromFile(f.Name())
+	if err != nil {
+		t.Fatalf("unexpected error: %s", err)
+	}
+
+	if i.rootTemplateHTML != rootTemplate {
+		t.Fatalf("root template html=%s, want=%s", i.rootTemplateHTML, rootTemplate)
+	}
+}
+
+func TestNewFromFileFS(t *testing.T) {
+	t.Parallel()
+
+	testFS := fstest.MapFS{
+		"root.html": {
+			Data: []byte(rootTemplate),
+		},
+	}
+
+	i, err := NewFromFileFS(testFS, "root.html")
 	if err != nil {
 		t.Fatalf("unexpected error: %s", err)
 	}
