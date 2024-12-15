@@ -4,6 +4,7 @@ import (
 	crypto "crypto/md5"
 	"encoding/hex"
 	"io"
+	"io/fs"
 	"os"
 )
 
@@ -32,18 +33,31 @@ func md5(str string) string {
 	return hex.EncodeToString(hash[:])
 }
 
-func md5File(path string) (string, error) {
+func md5FileFromFileFS(file fs.File) (string, error) {
 	hash := crypto.New()
+	if _, err := io.Copy(hash, file); err != nil {
+		return "", err
+	}
 
+	return hex.EncodeToString(hash.Sum(nil)), nil
+}
+
+func md5FileFromFS(fs fs.FS, path string) (string, error) {
+	f, err := fs.Open(path)
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	return md5FileFromFileFS(f)
+}
+
+func md5File(path string) (string, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return "", err
 	}
 	defer f.Close()
 
-	if _, err = io.Copy(hash, f); err != nil {
-		return "", err
-	}
-
-	return hex.EncodeToString(hash.Sum(nil)), nil
+	return md5FileFromFileFS(f)
 }

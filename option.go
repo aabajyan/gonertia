@@ -3,6 +3,7 @@ package gonertia
 import (
 	"fmt"
 	"io"
+	"io/fs"
 	"log"
 	"net/http"
 )
@@ -14,6 +15,18 @@ type Option func(i *Inertia) error
 func WithVersion(version string) Option {
 	return func(i *Inertia) error {
 		i.version = md5(version)
+		return nil
+	}
+}
+
+// WithVersionFromFileFS returns Option that will set Inertia's version based on file checksum from rootFS.
+func WithVersionFromFileFS(rootFS fs.FS, path string) Option {
+	return func(i *Inertia) (err error) {
+		i.version, err = md5FileFromFS(rootFS, path)
+		if err != nil {
+			return fmt.Errorf("calculating md5 hash of manifest file: %w", err)
+		}
+
 		return nil
 	}
 }

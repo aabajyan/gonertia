@@ -117,6 +117,7 @@ i, err := inertia.New(
     /* ... */
     inertia.WithVersion("some-version"), // by any string
     inertia.WithVersionFromFile("./public/build/manifest.json"), // by file checksum
+    inertia.WithVersionFromFileFS(embedFS, "./public/build/manifest.json"), // by file checksum from fs.FS
 )
 ```
 

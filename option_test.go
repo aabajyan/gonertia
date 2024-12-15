@@ -5,6 +5,7 @@ import (
 	"log"
 	"reflect"
 	"testing"
+	"testing/fstest"
 )
 
 func TestWithVersion(t *testing.T) {
@@ -33,6 +34,30 @@ func TestWithVersionFromFile(t *testing.T) {
 	f := tmpFile(t, "foo")
 
 	option := WithVersionFromFile(f.Name())
+
+	want := "acbd18db4cc2f85cedef654fccc4a4d8"
+
+	if err := option(i); err != nil {
+		t.Fatalf("unexpected error: %s", err)
+	}
+
+	if i.version != want {
+		t.Fatalf("version=%s, want=%s", i.version, want)
+	}
+}
+
+func TestWithVersionFromFileFS(t *testing.T) {
+	t.Parallel()
+
+	i := I()
+
+	mapFS := fstest.MapFS{
+		"foo": {
+			Data: []byte("foo"),
+		},
+	}
+
+	option := WithVersionFromFileFS(mapFS, "foo")
 
 	want := "acbd18db4cc2f85cedef654fccc4a4d8"
 
