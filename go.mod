@@ -1,3 +1,3 @@
-module github.com/romsar/gonertia
+module github.com/aabajyan/gonertia
 
 go 1.23
