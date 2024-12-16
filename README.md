@@ -52,6 +52,7 @@ import (
 func main() {
     i, err := inertia.New(rootHTMLString)
     // i, err := inertia.NewFromFile("resources/views/root.html")
+    // i, err := inertia.NewFromFileFS(embedFS, "resources/views/root.html")
     // i, err := inertia.NewFromReader(rootHTMLReader)
     // i, err := inertia.NewFromBytes(rootHTMLBytes)
     if err != nil {
@@ -117,6 +118,7 @@ i, err := inertia.New(
     /* ... */
     inertia.WithVersion("some-version"), // by any string
     inertia.WithVersionFromFile("./public/build/manifest.json"), // by file checksum
+    inertia.WithVersionFromFileFS(embedFS, "./public/build/manifest.json"), // by file checksum from fs.FS
 )
 ```
 

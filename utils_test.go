@@ -3,6 +3,7 @@ package gonertia
 import (
 	"reflect"
 	"testing"
+	"testing/fstest"
 )
 
 func Test_setOf(t *testing.T) {
@@ -155,5 +156,24 @@ func Test_md5File(t *testing.T) {
 
 	if want := md5("foo"); got != want {
 		t.Fatalf("md5File()=%s, want=%s", got, want)
+	}
+}
+
+func Test_md5FileFromFS(t *testing.T) {
+	t.Parallel()
+
+	testFS := fstest.MapFS{
+		"foo": {
+			Data: []byte("foo"),
+		},
+	}
+
+	got, err := md5FileFromFS(testFS, "foo")
+	if err != nil {
+		t.Fatalf("unexpected error: %s", err)
+	}
+
+	if want := md5("foo"); got != want {
+		t.Fatalf("md5FileFromFS()=%s, want=%s", got, want)
 	}
 }
